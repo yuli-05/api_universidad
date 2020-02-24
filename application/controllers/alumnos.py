@@ -29,7 +29,7 @@ class Alumnos:
             else:
                 result={}
                 result['app_version']="0.1.0" #visualizacion de datos lista
-                result['status']="Los datos insertados son incorrectos"
+                result['status']="Token incorrecto"
                 return json.dumps(result)
         except Exception:
             result={}
