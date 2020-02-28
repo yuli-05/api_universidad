@@ -1,38 +1,139 @@
 import web
-import app
 import json
 import csv
-
-render = web.template.render('application/controllers/')   #En esta no se ocupa
-
 class Alumnos:
     def GET(self):
         try:
-            datos=web.input()     #Los datos introducidos por el usuario se almacenaran en datos
-            if datos['token']=="1234":     #Si el usuario ingresa bien el token se declarara lo siguiente
-                result=[]           #Un arreglo
-                result2={}          #Un diccionario
-                if datos['action']=="get":        #Si accion es get va a hacer lo siguiente
-                    with open('static/csv/alumnos.csv','r') as csvfile:   #Ruta del archivo csv que va a leer, r es de lectura, csvfile es una variable cualquiera
-                        reader = csv.DictReader(csvfile)         #Lector del archivo, DictReader te almacena los datos como en diccionario en este caso en la variable reader
-                        for row in reader:              #Lee la primer fila y la manda la arreglo
-                            result.append(row)          #Lo manda al arreglo result
-                            result2['app_version']="0.1.0" #visualizacion de datos lista
+            datos=web.input()     
+            if datos['token']=="1234":
+                result=[]          
+                result2={}          
+                if datos['action']=="get":        
+                    with open('static/csv/alumnos.csv','r') as csvfile:   
+                        reader = csv.DictReader(csvfile)         
+                        for row in reader:              
+                            result.append(row)          
+                            result2['Version']="0.5.0"
                             result2['status']="200 OK"
-                            result2['alumnos']=result      #Result2 en la posicion alumnos, sera lo que va a almacenar en result
-                    return json.dumps(result2)          #Va a regresar un json del result2 que es lo que va almacenando el arreglo
+                            result2['alumnos']=result      
+                    return json.dumps(result2)         
+                
+                elif datos['action']=="search":
+                    consulta={}
+                    consulta['version']="0.01"
+                    consulta['status']="200 ok"
+                   
+                    with open('static/csv/alumnos.csv','r') as csvfile:
+                        reader = csv.DictReader(csvfile)
+                        result = []
+                        for row in reader:
+                            if str(row['matricula'])==datos['matricula']:
+                                result.append(row)
+                    return json.dumps(result)
+
+                elif datos["action"] == "put":
+                    p1 = datos["matricula"]
+                    p2 = datos["nombre"]
+                    p3 = datos["primer_apellido"]
+                    p4 = datos["segundo_apellido"]
+                    p5 = datos["carrera"]
+                    result = []
+                    result.append(p1)
+                    result.append(p2)
+                    result.append(p3)
+                    result.append(p4)
+                    result.append(p5)
+                    #result="matricula,nombre,primer_apellido,segundo_apellido,carrera\n"
+                    with open ('static/csv/alumnos.csv','a', newline = '') as csvfiles:
+                        writer = csv.writer(csvfiles)
+                        writer.writerow(result)
+                    return("Insertado nuevo registro")
+                
+                elif datos['action'] == "update":
+                    with open ('static/csv/alumnos.csv','r') as csvfiles:
+                        reader =csv.DictReader(csvfiles)
+                        lo = []
+                        validator = 0
+                        for row in reader:
+                            result = []
+                            if  str(row['matricula']) == datos['matricula']:
+                 
+                                with open ('static/csv/alumnos.csv','w') as csvfile:
+                                    writer = csv.writer(csvfile)
+                                    writer.writerow(row)
+                                    u1 = datos["matricula"]
+                                    u2 = datos["nombre"]
+                                    u3 = datos["primer_apellido"]
+                                    u4 = datos["segundo_apellido"]
+                                    u5 = datos["carrera"]
+                                    result.append(u1)
+                                    result.append(u2)
+                                    result.append(u3)
+                                    result.append(u4)
+                                    result.append(u5)
+                                    lo.append(result)
+                            else:
+                                fila1 = row['matricula'] 
+                                fila2 = row['nombre']
+                                fila3 = row['primer_apellido']
+                                fila4 = row['segundo_apellido']
+                                fila5 = row['carrera']
+                                result.append(fila1)
+                                result.append(fila2)
+                                result.append(fila3)
+                                result.append(fila4)
+                                result.append(fila5)
+                                lo.append(result)
+                        with open ('static/csv/alumnos.csv','a+', newline = '') as csvfiles:
+                            writer = csv.writer(csvfiles)
+                            for x in lo:
+                                writer.writerow(x)
+                        if validator == 0:
+                            result.append("Dato no encontrado")
+                    return json.dumps("Actualizado")
+
+                elif datos['action'] == "delete":
+                    with open ('static/csv/alumnos.csv','r') as csvfiles:
+                        reader =csv.DictReader(csvfiles)
+                        lo = []
+                        validator = 0
+                        for row in reader:
+                            result = []
+                            if  str(row['matricula']) == datos['matricula']:
+                                with open ('static/csv/alumnos.csv','w') as csvfile:
+                                    writer = csv.writer(csvfile)
+                                    writer.writerow(row)
+                                    print("ok")
+                            else:
+                                d1 = row['matricula'] 
+                                d2 = row['nombre']
+                                d3 = row['primer_apellido']
+                                d4 = row['segundo_apellido']
+                                d5 = row['carrera']
+                                result.append(d1)
+                                result.append(d2)
+                                result.append(d3)
+                                result.append(d4)
+                                result.append(d5)
+                                lo.append(result)
+                            with open ('static/csv/alumnos.csv','a+', newline = '') as csvfiles:
+                                writer = csv.writer(csvfiles)
+                                writer.writerow(result)
+                            if validator == 0:
+                                result.append("No existe el valor")
+                        return json.dumps("Realizado")
                 else:                           #Si accion no es get va a poner comando no encontrado
                     result2={}
-                    result2['app_version']="0.1.0" #visualizacion de datos lista
+                    result2['Version']="0.5.1"
                     result2['status']="Command not found"
                     return json.dumps(result2)
             else:
                 result={}
-                result['app_version']="0.1.0" #visualizacion de datos lista
-                result['status']="Token incorrecto"
+                result['Version']="0.5.2"
+                result['status']="Los datos insertados son incorrectos"
                 return json.dumps(result)
-        except Exception:
+        except Exception as e:
             result={}
-            result['app_version']="0.1.0" #visualizacion de datos lista
-            result['status']="Faltan valores por insertar"
+            text= "ups algo paso{}".format(e.args)
+            result  ['status'] = text 
             return json.dumps(result)
