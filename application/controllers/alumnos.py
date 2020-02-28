@@ -124,16 +124,16 @@ class Alumnos:
                         return json.dumps("Realizado")
                 else:                           #Si accion no es get va a poner comando no encontrado
                     result2={}
-                    result2['Version']="0.5.1"
+                    result2['Version']="0.5."
                     result2['status']="Command not found"
                     return json.dumps(result2)
             else:
                 result={}
-                result['Version']="0.5.2"
+                result['Version']="0.5.0"
                 result['status']="Los datos insertados son incorrectos"
                 return json.dumps(result)
         except Exception as e:
             result={}
-            text= "ups algo paso{}".format(e.args)
+            text= "algo paso{}".format(e.args)
             result  ['status'] = text 
             return json.dumps(result)
