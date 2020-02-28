@@ -43,7 +43,7 @@ class Alumnos:
                     result.append(p3)
                     result.append(p4)
                     result.append(p5)
-                    #result="matricula,nombre,primer_apellido,segundo_apellido,carrera\n"
+                    
                     with open ('static/csv/alumnos.csv','a', newline = '') as csvfiles:
                         writer = csv.writer(csvfiles)
                         writer.writerow(result)
@@ -52,8 +52,7 @@ class Alumnos:
                 elif datos['action'] == "update":
                     with open ('static/csv/alumnos.csv','r') as csvfiles:
                         reader =csv.DictReader(csvfiles)
-                        lo = []
-                        validator = 0
+                        lis = []
                         for row in reader:
                             result = []
                             if  str(row['matricula']) == datos['matricula']:
@@ -71,7 +70,7 @@ class Alumnos:
                                     result.append(u3)
                                     result.append(u4)
                                     result.append(u5)
-                                    lo.append(result)
+                                    lis.append(result)
                             else:
                                 fila1 = row['matricula'] 
                                 fila2 = row['nombre']
@@ -83,19 +82,18 @@ class Alumnos:
                                 result.append(fila3)
                                 result.append(fila4)
                                 result.append(fila5)
-                                lo.append(result)
+                                lis.append(result)
                         with open ('static/csv/alumnos.csv','a+', newline = '') as csvfiles:
                             writer = csv.writer(csvfiles)
-                            for x in lo:
+                            for x in lis:
                                 writer.writerow(x)
-                        if validator == 0:
-                            result.append("Dato no encontrado")
+                    
                     return json.dumps("Actualizado")
 
                 elif datos['action'] == "delete":
                     with open ('static/csv/alumnos.csv','r') as csvfiles:
                         reader =csv.DictReader(csvfiles)
-                        lo = []
+                        lis = []
                         validator = 0
                         for row in reader:
                             result = []
@@ -115,7 +113,7 @@ class Alumnos:
                                 result.append(d3)
                                 result.append(d4)
                                 result.append(d5)
-                                lo.append(result)
+                                lis.append(result)
                             with open ('static/csv/alumnos.csv','a+', newline = '') as csvfiles:
                                 writer = csv.writer(csvfiles)
                                 writer.writerow(result)
